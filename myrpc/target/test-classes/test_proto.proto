@@ -1,0 +1,31 @@
+//当前文件是protobuf的配置文件，最终会通过protoc生成相应语言的代码文件
+syntax = "proto3";//定义proto的版本
+package com.zhou;//生成java代码的话，这个就是java代码所在的包路径
+option java_outer_classname = "TestProto";//输出的java文件的名称
+option java_generic_services = true;
+message LoginRequest {
+  string name = 1;//数字是对成员变量进行标识，标识是第几个成员变量
+  string pwd = 2;
+}
+//定义数据类型 message这里定义的名称对应的就是java代码中的一个类
+message RegRequest {
+  string name = 1;//对应java的string
+  string pwd = 2;
+  int32 age = 3;//对应java的int
+  enum SEX {
+    MAN = 0;
+    WOMAN = 1;
+  }
+  SEX sex = 4;
+  string phone = 5;
+}
+message Response {
+  int32 errno = 1;
+  string errinfo = 2;
+  bool result = 3;
+}
+// 定义RPC服务接口类和服务方法
+service UserServiceRpc{
+  rpc login(LoginRequest) returns (Response);
+  rpc reg(RegRequest) returns (Response);
+}

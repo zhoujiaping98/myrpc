@@ -1,0 +1,40 @@
+syntax = "proto3";
+package com.zhou;
+option java_outer_classname = "UserServiceProto";
+option java_generic_services = true;  //根据下面定义的service类，生成rpc类和方法代理
+//里面的内容对应方法的参数列表
+//message这里定义的名称对应的就是java代码中的一个类
+//所以一个protobuf文件可以实现很多类的序列化和反序列化
+//我能生成一个类将这些参数序列化和反序列化，那我怎么知道要将哪些参数序列化和反序列化，当然是看你远程调用的方法需要哪些。
+message LoginRequest {
+  string name = 1;
+  string pwd = 2;
+}
+message RegRequest {
+  string name = 1;
+  string pwd = 2;
+  int32 age = 3;
+  enum SEX {
+    MAN = 0;
+    WOMAN = 1;
+  }
+  SEX sex = 4;
+  string phone = 5;
+}
+//两个方法共用response一个返回值类型
+message Response {
+  int32 errno = 1;    //错误码
+  string errinfo = 2; //错误信息
+  bool result = 3;    //rpc调用的返回值
+}
+
+// 定义RPC服务接口类和服务方法
+//代理类，两个方法对应UserServicImpl类里的两个方法
+//远程调用还需要序列化和反序列化，这些都是代理类来帮忙完成的
+//代理和负责序列化的类都是生成java文件的内部类
+//代理类就叫UserServiceRpc，这个内部类里面还有一个静态内部类，是远程调用需要的stub类
+service UserServiceRpc{
+  //两个rpc服务方法的定义
+  rpc login(LoginRequest) returns (Response);
+  rpc reg(RegRequest) returns (Response);
+}
